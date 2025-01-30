@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -43,6 +44,9 @@ public class LocalizationTest extends OpMode {
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
     private Telemetry telemetryA;
+    private Servo boostLeft;
+    private Servo boostRight;
+
 
     private DcMotorEx leftFront;
     private DcMotorEx leftRear;
@@ -60,14 +64,20 @@ public class LocalizationTest extends OpMode {
 
         dashboardPoseTracker = new DashboardPoseTracker(poseUpdater);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, leftFrontMotorName);
-        leftRear = hardwareMap.get(DcMotorEx.class, leftRearMotorName);
-        rightRear = hardwareMap.get(DcMotorEx.class, rightRearMotorName);
-        rightFront = hardwareMap.get(DcMotorEx.class, rightFrontMotorName);
+        boostLeft = hardwareMap.get(Servo.class, "boostLeft");
+        boostRight = hardwareMap.get(Servo.class, "boostRight");
+
+        leftFront = hardwareMap.get(DcMotorEx.class, "fL");
+        leftRear = hardwareMap.get(DcMotorEx.class, "bL");
+        rightRear = hardwareMap.get(DcMotorEx.class, "bR");
+        rightFront = hardwareMap.get(DcMotorEx.class, "fR");
         leftFront.setDirection(leftFrontMotorDirection);
         leftRear.setDirection(leftRearMotorDirection);
         rightFront.setDirection(rightFrontMotorDirection);
         rightRear.setDirection(rightRearMotorDirection);
+
+        boostLeft.setPosition(0.5);
+        boostRight.setPosition(0.5);
 
         motors = Arrays.asList(leftFront, leftRear, rightFront, rightRear);
 
