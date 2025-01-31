@@ -1,7 +1,5 @@
 package pedroPathing.examples;
 
-import android.provider.SyncStateContract;
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.util.Constants;
@@ -19,7 +17,7 @@ import pedroPathing.constants.LConstants;
  */
 
 @TeleOp(name = "Example Robot-Centric Teleop", group = "Examples")
-public class ExampleRobotCentricTeleop extends OpMode {
+public class ValenRobotCentricTeleop extends OpMode {
     private Follower follower;
     private final Pose startPose = new Pose(0,0,0);
 
