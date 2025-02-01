@@ -49,7 +49,6 @@ public class ValenAutonLeft extends OpMode {
 
     /** Scoring Pose of our robot. It is facing the submersible at a -45 degree (315 degree) angle. */
     private final Pose scorePose = new Pose(64.130, 114.363, Math.toRadians(0));
-    private final Pose curvePose = new Pose(1.674, 127.926, Math.toRadians(0));
 
     /** Lowest (First) Sample from the Spike Mark */
     private final Pose pickup1Pose = new Pose(15.209, 123.237, Math.toRadians(0));
