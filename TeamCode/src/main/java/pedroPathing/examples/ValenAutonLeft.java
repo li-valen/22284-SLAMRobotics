@@ -45,32 +45,33 @@ public class ValenAutonLeft extends OpMode {
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
     /** Start Pose of our robot */
-    private final Pose startPose = new Pose(11.755, 82.694, Math.toRadians(180));
+    private final Pose startPose = new Pose(11.755, 82.694, Math.toRadians(0));
 
     /** Scoring Pose of our robot. It is facing the submersible at a -45 degree (315 degree) angle. */
-    private final Pose scorePose = new Pose(63.795, 118.549, Math.toRadians(180));
+    private final Pose scorePose = new Pose(64.130, 114.363, Math.toRadians(0));
+    private final Pose curvePose = new Pose(1.674, 127.926, Math.toRadians(0));
 
     /** Lowest (First) Sample from the Spike Mark */
-    private final Pose pickup1Pose = new Pose(63.795, 118.716, Math.toRadians(180));
+    private final Pose pickup1Pose = new Pose(9.209, 123.237, Math.toRadians(0));
 
     /** Middle (Second) Sample from the Spike Mark */
-    private final Pose pickup2Pose = new Pose(64.465, 129.433, Math.toRadians(180));
+    private final Pose pickup2Pose = new Pose(64.298, 114.028, Math.toRadians(0));
 
     /** Highest (Third) Sample from the Spike Mark */
-    private final Pose pickup3Pose = new Pose(66.474, 13.395, Math.toRadians(180));
+    private final Pose pickup3Pose = new Pose(64.298, 124.912, Math.toRadians(0));
 
     /** Park Pose for our robot, after we do all of the scoring. */
-    private final Pose parkPose = new Pose(5.358, 135.126, Math.toRadians(180));
+    private final Pose parkPose = new Pose(3.684, 131.777, Math.toRadians(0));
 
     /** Park Control Pose for our robot, this is used to manipulate the bezier curve that we will create for the parking.
      * The Robot will not go to this pose, it is used a control point for our bezier curve. */
-    private final Pose parkControlPose = new Pose(64.633, 129.433, Math.toRadians(180));
+    private final Pose parkControlPose = new Pose(64.298, 125.079, Math.toRadians(0));
 
     /* These are our Paths and PathChains that we will define in buildPaths() */
-    private final Pose next1 = new Pose(64.465, 141.656, Math.toRadians(180));
+    private final Pose next1 = new Pose(64.130, 134.288, Math.toRadians(0));
 
-    private final Pose next2 = new Pose(6.530, 140.986, Math.toRadians(180));
-    private final Pose next3 = new Pose(57.935, 105.656, Math.toRadians(180));
+    private final Pose next2 = new Pose(4.186, 138.809, Math.toRadians(0));
+    private final Pose next3 = new Pose(57.935, 105.656, Math.toRadians(0));
 
     private Path scorePreload;
     private PathChain grabPickup1, grabPickup2, grabPickup3, scorePickup1, scorePickup2, scorePickup3, park, park1;
@@ -103,7 +104,7 @@ public class ValenAutonLeft extends OpMode {
 
         /* This is our grabPickup1 PathChain. We are using a single path with a BezierLine, which is a straight line. */
         grabPickup1 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(scorePose), new Point(pickup1Pose)))
+                .addPath(new BezierCurve(new Point(scorePose), new Point(curvePose), new Point(pickup1Pose)))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), pickup1Pose.getHeading())
                 .build();
 

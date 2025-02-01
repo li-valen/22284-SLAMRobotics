@@ -45,32 +45,32 @@ public class ValenAutonRight extends OpMode {
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
     /** Start Pose of our robot */
-    private final Pose startPose = new Pose(11.755, 62.694, Math.toRadians(180));
+    private final Pose startPose = new Pose(11.755, 62.694, Math.toRadians(0));
 
     /** Scoring Pose of our robot. It is facing the submersible at a -45 degree (315 degree) angle. */
-    private final Pose scorePose = new Pose(66.474, 23.944, Math.toRadians(180));
+    private final Pose scorePose = new Pose(66.474, 23.944, Math.toRadians(0));
 
     /** Lowest (First) Sample from the Spike Mark */
-    private final Pose pickup1Pose = new Pose(7.200, 23.944, Math.toRadians(180));
+    private final Pose pickup1Pose = new Pose(7.200, 23.944, Math.toRadians(0));
 
     /** Middle (Second) Sample from the Spike Mark */
-    private final Pose pickup2Pose = new Pose(66.474, 23.944, Math.toRadians(180));
+    private final Pose pickup2Pose = new Pose(66.474, 23.944, Math.toRadians(0));
 
     /** Highest (Third) Sample from the Spike Mark */
-    private final Pose pickup3Pose = new Pose(66.474, 13.395, Math.toRadians(180));
+    private final Pose pickup3Pose = new Pose(66.474, 13.395, Math.toRadians(0));
 
     /** Park Pose for our robot, after we do all of the scoring. */
-    private final Pose parkPose = new Pose(7.367, 13.228, Math.toRadians(180));
+    private final Pose parkPose = new Pose(7.367, 13.228, Math.toRadians(0));
 
     /** Park Control Pose for our robot, this is used to manipulate the bezier curve that we will create for the parking.
      * The Robot will not go to this pose, it is used a control point for our bezier curve. */
-    private final Pose parkControlPose = new Pose(66.474, 13.228, Math.toRadians(180));
+    private final Pose parkControlPose = new Pose(66.474, 13.228, Math.toRadians(0));
 
     /* These are our Paths and PathChains that we will define in buildPaths() */
-    private final Pose next1 = new Pose(66.642, 3.851, Math.toRadians(180));
+    private final Pose next1 = new Pose(66.642, 3.851, Math.toRadians(0));
 
-    private final Pose next2 = new Pose(7.870, 3.684, Math.toRadians(180));
-    private final Pose next3 = new Pose(57.433, 38.679, Math.toRadians(180));
+    private final Pose next2 = new Pose(7.870, 3.684, Math.toRadians(0));
+    private final Pose next3 = new Pose(57.433, 38.679, Math.toRadians(0));
 
     private Path scorePreload;
     private PathChain grabPickup1, grabPickup2, grabPickup3, scorePickup1, scorePickup2, scorePickup3, park, park1;
