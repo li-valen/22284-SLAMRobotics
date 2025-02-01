@@ -52,7 +52,7 @@ public class ValenAutonLeft extends OpMode {
     private final Pose curvePose = new Pose(1.674, 127.926, Math.toRadians(0));
 
     /** Lowest (First) Sample from the Spike Mark */
-    private final Pose pickup1Pose = new Pose(9.209, 123.237, Math.toRadians(0));
+    private final Pose pickup1Pose = new Pose(15.209, 123.237, Math.toRadians(0));
 
     /** Middle (Second) Sample from the Spike Mark */
     private final Pose pickup2Pose = new Pose(64.298, 114.028, Math.toRadians(0));
@@ -61,7 +61,7 @@ public class ValenAutonLeft extends OpMode {
     private final Pose pickup3Pose = new Pose(64.298, 124.912, Math.toRadians(0));
 
     /** Park Pose for our robot, after we do all of the scoring. */
-    private final Pose parkPose = new Pose(3.684, 131.777, Math.toRadians(0));
+    private final Pose parkPose = new Pose(15.684, 131.777, Math.toRadians(0));
 
     /** Park Control Pose for our robot, this is used to manipulate the bezier curve that we will create for the parking.
      * The Robot will not go to this pose, it is used a control point for our bezier curve. */
@@ -70,7 +70,7 @@ public class ValenAutonLeft extends OpMode {
     /* These are our Paths and PathChains that we will define in buildPaths() */
     private final Pose next1 = new Pose(64.130, 134.288, Math.toRadians(0));
 
-    private final Pose next2 = new Pose(4.186, 138.809, Math.toRadians(0));
+    private final Pose next2 = new Pose(15.186, 138.809, Math.toRadians(0));
     private final Pose next3 = new Pose(57.935, 105.656, Math.toRadians(0));
 
     private Path scorePreload;
@@ -104,7 +104,7 @@ public class ValenAutonLeft extends OpMode {
 
         /* This is our grabPickup1 PathChain. We are using a single path with a BezierLine, which is a straight line. */
         grabPickup1 = follower.pathBuilder()
-                .addPath(new BezierCurve(new Point(scorePose), new Point(curvePose), new Point(pickup1Pose)))
+                .addPath(new BezierCurve(new Point(scorePose), new Point(pickup1Pose)))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), pickup1Pose.getHeading())
                 .build();
 
