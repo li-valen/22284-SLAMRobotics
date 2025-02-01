@@ -25,7 +25,7 @@ import pedroPathing.constants.LConstants;
  * @version 2.0, 11/28/2024
  */
 
-@Autonomous(name = "Example Auto Right", group = "Examples")
+@Autonomous(name = "Valen Auto Right", group = "Examples")
 public class ValenAutonRight extends OpMode {
 
     private Follower follower;

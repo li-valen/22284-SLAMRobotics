@@ -25,7 +25,7 @@ import pedroPathing.constants.LConstants;
  * @version 2.0, 11/28/2024
  */
 
-@Autonomous(name = "Example Auto Right", group = "Examples")
+@Autonomous(name = "Auto Left for Blue", group = "Examples")
 public class ValenAutonLeft extends OpMode {
 
     private Follower follower;
@@ -45,19 +45,35 @@ public class ValenAutonLeft extends OpMode {
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
     /** Start Pose of our robot */
-    private final Pose startPose = new Pose(10.188, 83.657, Math.toRadians(180));
+    private final Pose startPose = new Pose(11.755, 82.694, Math.toRadians(180));
 
     /** Scoring Pose of our robot. It is facing the submersible at a -45 degree (315 degree) angle. */
-    private final Pose scorePose = new Pose(9.992, 109.127, Math.toRadians(180));
+    private final Pose scorePose = new Pose(63.795, 118.549, Math.toRadians(180));
 
     /** Lowest (First) Sample from the Spike Mark */
-    private final Pose pickup1Pose = new Pose(61.910, 109.322, Math.toRadians(180));
+    private final Pose pickup1Pose = new Pose(63.795, 118.716, Math.toRadians(180));
 
     /** Middle (Second) Sample from the Spike Mark */
-    private final Pose pickup2Pose = new Pose(62.106, 96.980, Math.toRadians(180));
+    private final Pose pickup2Pose = new Pose(64.465, 129.433, Math.toRadians(180));
+
+    /** Highest (Third) Sample from the Spike Mark */
+    private final Pose pickup3Pose = new Pose(66.474, 13.395, Math.toRadians(180));
+
+    /** Park Pose for our robot, after we do all of the scoring. */
+    private final Pose parkPose = new Pose(5.358, 135.126, Math.toRadians(180));
+
+    /** Park Control Pose for our robot, this is used to manipulate the bezier curve that we will create for the parking.
+     * The Robot will not go to this pose, it is used a control point for our bezier curve. */
+    private final Pose parkControlPose = new Pose(64.633, 129.433, Math.toRadians(180));
+
+    /* These are our Paths and PathChains that we will define in buildPaths() */
+    private final Pose next1 = new Pose(64.465, 141.656, Math.toRadians(180));
+
+    private final Pose next2 = new Pose(6.530, 140.986, Math.toRadians(180));
+    private final Pose next3 = new Pose(57.935, 105.656, Math.toRadians(180));
 
     private Path scorePreload;
-    private PathChain grabPickup1, scorePickup1;
+    private PathChain grabPickup1, grabPickup2, grabPickup3, scorePickup1, scorePickup2, scorePickup3, park, park1;
 
     /** Build the paths for the auto (adds, for example, constant/linear headings while doing paths)
      * It is necessary to do this so that all the paths are built before the auto starts. **/
@@ -96,6 +112,41 @@ public class ValenAutonLeft extends OpMode {
                 .addPath(new BezierLine(new Point(pickup1Pose), new Point(pickup2Pose)))
                 .setLinearHeadingInterpolation(pickup1Pose.getHeading(), pickup2Pose.getHeading())
                 .build();
+
+        /* This is our grabPickup2 PathChain. We are using a single path with a BezierLine, which is a straight line. */
+        grabPickup2 = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(pickup2Pose), new Point(pickup3Pose)))
+                .setLinearHeadingInterpolation(pickup2Pose.getHeading(), pickup3Pose.getHeading())
+                .build();
+
+        /* This is our scorePickup2 PathChain. We are using a single path with a BezierLine, which is a straight line. */
+        scorePickup2 = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(pickup3Pose), new Point(parkPose)))
+                .setLinearHeadingInterpolation(pickup3Pose.getHeading(), parkPose.getHeading())
+                .build();
+
+        /* This is our grabPickup3 PathChain. We are using a single path with a BezierLine, which is a straight line. */
+        grabPickup3 = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(parkPose), new Point(parkControlPose)))
+                .setLinearHeadingInterpolation(parkPose.getHeading(), parkControlPose.getHeading())
+                .build();
+
+        /* This is our scorePickup3 PathChain. We are using a single path with a BezierLine, which is a straight line. */
+        scorePickup3 = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(parkControlPose), new Point(next1)))
+                .setLinearHeadingInterpolation(parkControlPose.getHeading(), next1.getHeading())
+                .build();
+
+        park = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(next1), new Point(next2)))
+                .setLinearHeadingInterpolation(next1.getHeading(), next2.getHeading())
+                .build();
+
+        park1 = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(next2), new Point(next3)))
+                .setLinearHeadingInterpolation(next2.getHeading(), next3.getHeading())
+                .build();
+
     }
 
     /** This switch is called continuously and runs the pathing, at certain points, it triggers the action state.
@@ -137,12 +188,73 @@ public class ValenAutonLeft extends OpMode {
             case 3:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy()) {
+                    /* Score Sample */
+
+                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
+                    follower.followPath(grabPickup2,true);
+                    setPathState(4);
+                }
+                break;
+            case 4:
+                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup2Pose's position */
+                if(!follower.isBusy()) {
+                    /* Grab Sample */
+
+                    /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
+                    follower.followPath(scorePickup2,true);
+                    setPathState(5);
+                }
+                break;
+            case 5:
+                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
+                if(!follower.isBusy()) {
+                    /* Score Sample */
+
+                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
+                    follower.followPath(grabPickup3,true);
+                    setPathState(6);
+                }
+                break;
+            case 6:
+                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup3Pose's position */
+                if(!follower.isBusy()) {
+                    /* Grab Sample */
+
+                    /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
+                    follower.followPath(scorePickup3, true);
+                    setPathState(7);
+                }
+                break;
+            case 7:
+                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
+                if(!follower.isBusy()) {
+                    /* Score Sample */
+
+                    /* Since this is a pathChain, we can have Pedro hold the end point while we are parked */
+                    follower.followPath(park,true);
+                    setPathState(8);
+                }
+                break;
+            case 8:
+                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
+                if(!follower.isBusy()) {
+                    /* Level 1 Ascent */
+
+                    /* Set the state to a Case we won't use or define, so it just stops running an new paths */
+                    follower.followPath(park1,true);
+                    setPathState(9);
+                }
+                break;
+            case 9:
+                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
+                if(!follower.isBusy()) {
                     /* Level 1 Ascent */
 
                     /* Set the state to a Case we won't use or define, so it just stops running an new paths */
                     setPathState(-1);
                 }
                 break;
+
         }
     }
 
