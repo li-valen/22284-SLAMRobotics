@@ -21,12 +21,11 @@ import pedroPathing.constants.LConstants;
 public class ValenFieldCentricTeleop extends OpMode {
     private Follower follower;
     private final Pose startPose = new Pose(0,0,0);
-
-    private Servo boostLeft;
-    private Servo boostRight;
-    private Servo liftLeft;
-    private Servo liftRight;
-    private Servo claw;
+    private Servo upLeft0;
+    private Servo upRight1;
+    private Servo clawSpin2;
+    private Servo clawRight3;
+    private Servo clawLeft4;
 
     /** This method is call once when init is played, it initializes the follower **/
     @Override
@@ -35,11 +34,11 @@ public class ValenFieldCentricTeleop extends OpMode {
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
 
-        boostLeft = hardwareMap.get(Servo.class, "boostLeft");
-        boostRight = hardwareMap.get(Servo.class, "boostRight");
-        liftLeft = hardwareMap.get(Servo.class, "liftLeft");
-        liftRight = hardwareMap.get(Servo.class, "liftRight");
-        claw = hardwareMap.get(Servo.class, "claw");
+        upLeft0 = hardwareMap.get(Servo.class, "upLeft");
+        upRight1 = hardwareMap.get(Servo.class, "upRight");
+        clawSpin2 = hardwareMap.get(Servo.class, "clawSpin");
+        clawRight3 = hardwareMap.get(Servo.class, "clawRight");
+        clawLeft4 = hardwareMap.get(Servo.class, "clawLeft");
     }
 
     /** This method is called continuously after Init while waiting to be started. **/
@@ -69,48 +68,36 @@ public class ValenFieldCentricTeleop extends OpMode {
 
         //raise just boosters
         if (gamepad2.a){
-            boostLeft.setPosition(1);
-            boostRight.setPosition(1);
+            upLeft0.setPosition(1);
         }
 
         //retract just boosters
-        if (gamepad2.b){
-            boostLeft.setPosition(0);
-            boostRight.setPosition(0);
+        if (gamepad2.dpad_down){
+            upLeft0.setPosition(0.5);
         }
 
-        //retract just lifts
+        //spin
         if (gamepad2.y){
-            liftLeft.setPosition(0);
-            liftRight.setPosition(1);
+            clawSpin2.setPosition(1);
         }
+
 
         //extend lifts, drop boosts
-        if (gamepad2.x){
-            liftLeft.setPosition(0.5);
-            liftRight.setPosition(0.5);
-            boostLeft.setPosition(0);
-            boostRight.setPosition(0);
+        if (gamepad2.dpad_up){
+            clawSpin2.setPosition(0);
         }
 
 
         //universal reset
-        if (gamepad2.dpad_down){
-            boostLeft.setPosition(0);
-            boostRight.setPosition(0);
-            liftLeft.setPosition(0);
-            claw.setPosition(1);
+        if (gamepad2.x){
+            clawLeft4.setPosition(1);
         }
 
         //grab
-        if (gamepad2.right_bumper){
-            claw.setPosition(0.25);
+        if (gamepad2.y){
+            clawRight3.setPosition(0.25);
         }
 
-        //let go
-        if (gamepad2.left_bumper){
-            claw.setPosition(1);
-        }
 
         /* Telemetry Outputs of our Follower */
         telemetry.addData("X", follower.getPose().getX());
