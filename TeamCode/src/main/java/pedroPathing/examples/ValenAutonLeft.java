@@ -11,6 +11,7 @@ import com.pedropathing.util.Constants;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
@@ -25,7 +26,7 @@ import pedroPathing.constants.LConstants;
  * @version 2.0, 11/28/2024
  */
 
-@Autonomous(name = "Auto Left for Blue", group = "Examples")
+@Autonomous(name = "GOOD-LEFT")
 public class ValenAutonLeft extends OpMode {
 
     private Follower follower;
@@ -45,35 +46,19 @@ public class ValenAutonLeft extends OpMode {
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
     /** Start Pose of our robot */
-    private final Pose startPose = new Pose(11.755, 82.694, Math.toRadians(0));
+    private final Pose startPose = new Pose(9.796, 87.379, Math.toRadians(0));
 
     /** Scoring Pose of our robot. It is facing the submersible at a -45 degree (315 degree) angle. */
-    private final Pose scorePose = new Pose(64.130, 114.363, Math.toRadians(0));
+    private final Pose secondPose = new Pose(34.873, 108.147, Math.toRadians(0));
 
-    /** Lowest (First) Sample from the Spike Mark */
-    private final Pose pickup1Pose = new Pose(15.209, 123.237, Math.toRadians(0));
+    private final Pose thirdPose = new Pose(60.147, 108.147, Math.toRadians(0));
 
-    /** Middle (Second) Sample from the Spike Mark */
-    private final Pose pickup2Pose = new Pose(64.298, 114.028, Math.toRadians(0));
+    private final Pose fourthPose = new Pose(60.147, 94.237, Math.toRadians(90));
 
-    /** Highest (Third) Sample from the Spike Mark */
-    private final Pose pickup3Pose = new Pose(64.298, 124.912, Math.toRadians(0));
+    private PathChain doshit;
+    private DcMotor arm;
 
-    /** Park Pose for our robot, after we do all of the scoring. */
-    private final Pose parkPose = new Pose(15.684, 131.777, Math.toRadians(0));
-
-    /** Park Control Pose for our robot, this is used to manipulate the bezier curve that we will create for the parking.
-     * The Robot will not go to this pose, it is used a control point for our bezier curve. */
-    private final Pose parkControlPose = new Pose(64.298, 125.079, Math.toRadians(0));
-
-    /* These are our Paths and PathChains that we will define in buildPaths() */
-    private final Pose next1 = new Pose(64.130, 134.288, Math.toRadians(0));
-
-    private final Pose next2 = new Pose(15.186, 138.809, Math.toRadians(0));
-    private final Pose next3 = new Pose(57.935, 105.656, Math.toRadians(0));
-
-    private Path scorePreload;
-    private PathChain grabPickup1, grabPickup2, grabPickup3, scorePickup1, scorePickup2, scorePickup3, park, park1;
+    private Path line1, line2, line3, line4, line5, line6, line7, line8, line9, line10, line11, line12;
 
     /** Build the paths for the auto (adds, for example, constant/linear headings while doing paths)
      * It is necessary to do this so that all the paths are built before the auto starts. **/
@@ -95,58 +80,177 @@ public class ValenAutonLeft extends OpMode {
          * Here is a explanation of the difference between Paths and PathChains <https://pedropathing.com/commonissues/pathtopathchain.html> */
 
         /* This is our scorePreload path. We are using a BezierLine, which is a straight line. */
-        scorePreload = new Path(new BezierLine(new Point(startPose), new Point(scorePose)));
-        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
+        line1 = new Path( new BezierLine(
+                new Point(9.796, 87.379, Point.CARTESIAN),
+                new Point(34.873, 108.147, Point.CARTESIAN)
+        ));
+        line1.setConstantHeadingInterpolation(Math.toRadians(0));
 
-        /* Here is an example for Constant Interpolation
-        scorePreload.setConstantInterpolation(startPose.getHeading()); */
+        line2 = new Path( new BezierLine(
+                new Point(34.873, 108.147, Point.CARTESIAN),
+                new Point(60.147, 108.147, Point.CARTESIAN)
+        )
+        );
+        line2.setConstantHeadingInterpolation(Math.toRadians(0));
 
-        /* This is our grabPickup1 PathChain. We are using a single path with a BezierLine, which is a straight line. */
-        grabPickup1 = follower.pathBuilder()
-                .addPath(new BezierCurve(new Point(scorePose), new Point(pickup1Pose)))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), pickup1Pose.getHeading())
+        line3 = new Path( new BezierLine(
+                new Point(60.147, 108.147, Point.CARTESIAN),
+                new Point(60.343, 118.335, Point.CARTESIAN)
+        ));
+        line3.setConstantHeadingInterpolation(Math.toRadians(0));
+
+        line4 = new Path( new BezierLine(
+                new Point(60.343, 118.335, Point.CARTESIAN),
+                new Point(11.167, 122.841, Point.CARTESIAN)
+        ));
+        line4.setConstantHeadingInterpolation(Math.toRadians(0));
+
+        line5 = new Path( new BezierLine(
+                new Point(11.167, 122.841, Point.CARTESIAN),
+                new Point(60.147, 118.531, Point.CARTESIAN)
+        ));
+        line5.setConstantHeadingInterpolation(Math.toRadians(0));
+
+        line6 = new Path( new BezierLine(
+                new Point(60.147, 118.531, Point.CARTESIAN),
+                new Point(60.147, 129.306, Point.CARTESIAN)
+        ));
+        line6.setConstantHeadingInterpolation(Math.toRadians(0));
+
+        line7 = new Path( new BezierLine(
+                new Point(60.147, 129.306, Point.CARTESIAN),
+                new Point(11.559, 128.914, Point.CARTESIAN)
+        ));
+        line7.setConstantHeadingInterpolation(Math.toRadians(0));
+
+        line8 = new Path( new BezierLine(
+                new Point(11.559, 128.914, Point.CARTESIAN),
+                new Point(60.147, 129.502, Point.CARTESIAN)
+        ));
+        line8.setConstantHeadingInterpolation(Math.toRadians(0));
+
+        line9 = new Path( new BezierLine(
+                new Point(60.147, 129.502, Point.CARTESIAN),
+                new Point(59.755, 136, Point.CARTESIAN)
+        ));
+        line9.setConstantHeadingInterpolation(Math.toRadians(0));
+
+        line10 = new Path( new BezierLine(
+                new Point(59.755, 136, Point.CARTESIAN),
+                new Point(15.869, 134.988, Point.CARTESIAN)
+        ));
+        line10.setConstantHeadingInterpolation(Math.toRadians(0));
+
+        line11 = new Path( new BezierLine(
+                new Point(15.869, 134.988, Point.CARTESIAN),
+                new Point(60.147, 108.147, Point.CARTESIAN)
+        ));
+        line11.setConstantHeadingInterpolation(Math.toRadians(0));
+
+        line12 = new Path( new BezierLine(
+                new Point(60.147, 108.147, Point.CARTESIAN),
+                new Point(59.755, 100, Point.CARTESIAN)
+        ));
+        line12.setConstantHeadingInterpolation(Math.toRadians(90));
+
+        doshit = follower.pathBuilder()
+                .addPath(
+                        // Line 1
+                        new BezierLine(
+                                new Point(7.249, 84.441, Point.CARTESIAN),
+                                new Point(34.873, 108.147, Point.CARTESIAN)
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .addPath(
+                        // Line 2
+                        new BezierLine(
+                                new Point(34.873, 108.147, Point.CARTESIAN),
+                                new Point(60.147, 108.147, Point.CARTESIAN)
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .addPath(
+                        // Line 3
+                        new BezierLine(
+                                new Point(60.147, 108.147, Point.CARTESIAN),
+                                new Point(60.343, 118.335, Point.CARTESIAN)
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .addPath(
+                        // Line 4
+                        new BezierLine(
+                                new Point(60.343, 118.335, Point.CARTESIAN),
+                                new Point(8.620, 118.335, Point.CARTESIAN)
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .addPath(
+                        // Line 5
+                        new BezierLine(
+                                new Point(8.620, 118.335, Point.CARTESIAN),
+                                new Point(60.147, 118.531, Point.CARTESIAN)
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .addPath(
+                        // Line 6
+                        new BezierLine(
+                                new Point(60.147, 118.531, Point.CARTESIAN),
+                                new Point(60.147, 129.306, Point.CARTESIAN)
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .addPath(
+                        // Line 7
+                        new BezierLine(
+                                new Point(60.147, 129.306, Point.CARTESIAN),
+                                new Point(11.559, 128.914, Point.CARTESIAN)
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .addPath(
+                        // Line 8
+                        new BezierLine(
+                                new Point(11.559, 128.914, Point.CARTESIAN),
+                                new Point(60.147, 129.502, Point.CARTESIAN)
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .addPath(
+                        // Line 9
+                        new BezierLine(
+                                new Point(60.147, 129.502, Point.CARTESIAN),
+                                new Point(59.755, 134.988, Point.CARTESIAN)
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .addPath(
+                        // Line 10
+                        new BezierLine(
+                                new Point(59.755, 134.988, Point.CARTESIAN),
+                                new Point(15.869, 134.988, Point.CARTESIAN)
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .addPath(
+                        // Line 11
+                        new BezierLine(
+                                new Point(15.869, 134.988, Point.CARTESIAN),
+                                new Point(60.147, 108.147, Point.CARTESIAN)
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .addPath(
+                        // Line 12
+                        new BezierLine(
+                                new Point(60.147, 108.147, Point.CARTESIAN),
+                                new Point(59.755, 94.433, Point.CARTESIAN)
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(90))
                 .build();
-
-        /* This is our scorePickup1 PathChain. We are using a single path with a BezierLine, which is a straight line. */
-        scorePickup1 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(pickup1Pose), new Point(pickup2Pose)))
-                .setLinearHeadingInterpolation(pickup1Pose.getHeading(), pickup2Pose.getHeading())
-                .build();
-
-        /* This is our grabPickup2 PathChain. We are using a single path with a BezierLine, which is a straight line. */
-        grabPickup2 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(pickup2Pose), new Point(pickup3Pose)))
-                .setLinearHeadingInterpolation(pickup2Pose.getHeading(), pickup3Pose.getHeading())
-                .build();
-
-        /* This is our scorePickup2 PathChain. We are using a single path with a BezierLine, which is a straight line. */
-        scorePickup2 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(pickup3Pose), new Point(parkPose)))
-                .setLinearHeadingInterpolation(pickup3Pose.getHeading(), parkPose.getHeading())
-                .build();
-
-        /* This is our grabPickup3 PathChain. We are using a single path with a BezierLine, which is a straight line. */
-        grabPickup3 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(parkPose), new Point(parkControlPose)))
-                .setLinearHeadingInterpolation(parkPose.getHeading(), parkControlPose.getHeading())
-                .build();
-
-        /* This is our scorePickup3 PathChain. We are using a single path with a BezierLine, which is a straight line. */
-        scorePickup3 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(parkControlPose), new Point(next1)))
-                .setLinearHeadingInterpolation(parkControlPose.getHeading(), next1.getHeading())
-                .build();
-
-        park = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(next1), new Point(next2)))
-                .setLinearHeadingInterpolation(next1.getHeading(), next2.getHeading())
-                .build();
-
-        park1 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(next2), new Point(next3)))
-                .setLinearHeadingInterpolation(next2.getHeading(), next3.getHeading())
-                .build();
-
     }
 
     /** This switch is called continuously and runs the pathing, at certain points, it triggers the action state.
@@ -154,104 +258,91 @@ public class ValenAutonLeft extends OpMode {
      * The followPath() function sets the follower to run the specific path, but does NOT wait for it to finish before moving on. */
     public void autonomousPathUpdate() {
         switch (pathState) {
-            case 0:
-                follower.followPath(scorePreload);
+            case 0: // Start following the path
+                follower.followPath(line1);
                 setPathState(1);
                 break;
-            case 1:
 
-                /* You could check for
-                - Follower State: "if(!follower.isBusy() {}"
-                - Time: "if(pathTimer.getElapsedTimeSeconds() > 1) {}"
-                - Robot Position: "if(follower.getPose().getX() > 36) {}"
-                */
-
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Score Preload */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(grabPickup1,true);
-                    setPathState(2);
+            case 1: // Wait until the path is finished
+                if (!follower.isBusy()) {
+                    follower.followPath(line2);
+                    setPathState(2); // Move to arm movement state
                 }
                 break;
-            case 2:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup1Pose's position */
-                if(!follower.isBusy()) {
-                    /* Grab Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(scorePickup1,true);
-                    setPathState(3);
+            case 2: // Wait until the path is finished
+                if (!follower.isBusy()) {
+                    follower.followPath(line3);
+                    setPathState(3); // Move to arm movement state
                 }
                 break;
-            case 3:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Score Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(grabPickup2,true);
-                    setPathState(4);
+            case 3: // Wait until the path is finished
+                if (!follower.isBusy()) {
+                    follower.followPath(line4);
+                    setPathState(4); // Move to arm movement state
                 }
                 break;
-            case 4:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup2Pose's position */
-                if(!follower.isBusy()) {
-                    /* Grab Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(scorePickup2,true);
-                    setPathState(5);
+            case 4: // Wait until the path is finished
+                if (!follower.isBusy()) {
+                    follower.followPath(line5);
+                    setPathState(5); // Move to arm movement state
                 }
                 break;
-            case 5:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Score Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    follower.followPath(grabPickup3,true);
-                    setPathState(6);
+            case 5: // Wait until the path is finished
+                if (!follower.isBusy()) {
+                    follower.followPath(line6);
+                    setPathState(6); // Move to arm movement state
                 }
                 break;
-            case 6:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup3Pose's position */
-                if(!follower.isBusy()) {
-                    /* Grab Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
-                    follower.followPath(scorePickup3, true);
-                    setPathState(7);
+            case 6: // Wait until the path is finished
+                if (!follower.isBusy()) {
+                    follower.followPath(line7);
+                    setPathState(7); // Move to arm movement state
                 }
                 break;
-            case 7:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Score Sample */
-
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are parked */
-                    follower.followPath(park,true);
-                    setPathState(8);
+            case 7: // Wait until the path is finished
+                if (!follower.isBusy()) {
+                    follower.followPath(line8);
+                    setPathState(8); // Move to arm movement state
                 }
                 break;
-            case 8:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Level 1 Ascent */
-
-                    /* Set the state to a Case we won't use or define, so it just stops running an new paths */
-                    follower.followPath(park1,true);
-                    setPathState(9);
+            case 8: // Wait until the path is finished
+                if (!follower.isBusy()) {
+                    follower.followPath(line9);
+                    setPathState(9); // Move to arm movement state
                 }
                 break;
-            case 9:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Level 1 Ascent */
+            case 9: // Wait until the path is finished
+                if (!follower.isBusy()) {
+                    follower.followPath(line10);
+                    setPathState(10); // Move to arm movement state
+                }
+                break;
+            case 10: // Wait until the path is finished
+                if (!follower.isBusy()) {
+                    follower.followPath(line11);
+                    setPathState(11); // Move to arm movement state
+                }
+                break;
+            case 11: // Wait until the path is finished
+                if (!follower.isBusy()) {
+                    follower.followPath(line12);
+                    setPathState(12); // Move to arm movement state
+                }
+                break;
 
-                    /* Set the state to a Case we won't use or define, so it just stops running an new paths */
-                    setPathState(-1);
+            case 12: // Wait until the path is finished
+                if (!follower.isBusy()) {
+                    setPathState(13); // Move to arm movement state
+                }
+                break;
+
+            case 13: // Move the arm
+                double targetPosition = arm.getCurrentPosition() - 2100;
+                arm.setPower(-0.5);
+
+                if (arm.getCurrentPosition() <= targetPosition) { // 3s failsafe
+                    arm.setPower(0);
+                    setPathState(-1); // Stop or proceed to the next action
                 }
                 break;
 
@@ -278,6 +369,7 @@ public class ValenAutonLeft extends OpMode {
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
+        telemetry.addData("arm:", arm.getCurrentPosition());
         telemetry.update();
     }
 
@@ -287,6 +379,8 @@ public class ValenAutonLeft extends OpMode {
         pathTimer = new Timer();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
+
+        arm = hardwareMap.get(DcMotor.class, "arm");
 
         Constants.setConstants(FConstants.class, LConstants.class);
         follower = new Follower(hardwareMap);
@@ -311,3 +405,4 @@ public class ValenAutonLeft extends OpMode {
     public void stop() {
     }
 }
+
